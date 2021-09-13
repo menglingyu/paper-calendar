@@ -3,8 +3,7 @@
     import dayGridPlugin from "@fullcalendar/daygrid";
     import timeGridPlugin from "@fullcalendar/timegrid";
     import interactionPlugin from "@fullcalendar/interaction"; // needed for dateClick
-    import { calendarEvents$, selectedDate$ } from "../../store";
-    import { onMount } from "svelte";
+    import { calendarEvents$ } from "../../store";
 
     let options = {
         dateClick: handleDateClick,
@@ -22,12 +21,9 @@
         weekends: true,
     };
 
-    $: options = { ...options, events: $calendarEvents$ };
-
-    // onMount(() => {
-    //     const data = localStorage.getItem('data')
-    //     calendarEvents$
-    // })
+    $: {
+        options = { ...options, events: $calendarEvents$ };
+    }
 
     let calendarComponentRef;
     function toggleWeekends() {

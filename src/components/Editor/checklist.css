@@ -1,0 +1,5 @@
+.cdx-checklist {}
+
+.checklist__item>span {
+  margin: 0;
+}
