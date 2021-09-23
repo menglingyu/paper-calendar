@@ -3,13 +3,13 @@
     import dayGridPlugin from "@fullcalendar/daygrid";
     import timeGridPlugin from "@fullcalendar/timegrid";
     import interactionPlugin from "@fullcalendar/interaction"; // needed for dateClick
-    import { calendarEvents$ } from "../../store";
+    import { calendarEvents$, selectedDate$ } from "../../store";
+    import { getColor } from "../../helper";
 
     let options = {
         dateClick: handleDateClick,
         droppable: true,
         editable: true,
-        events: [],
         initialView: "dayGridMonth",
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         headerToolbar: {
@@ -17,15 +17,11 @@
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
         },
-        height: "600px",
         weekends: true,
     };
-
-    $: {
-        options = { ...options, events: $calendarEvents$ };
-    }
-
     let calendarComponentRef;
+    $: options = { ...options, events: $calendarEvents$ };
+
     function toggleWeekends() {
         options.weekends = !options.weekends;
         options = { ...options };
@@ -35,27 +31,11 @@
         calendarApi.gotoDate("2000-01-01"); // call a method on the Calendar object
     }
     function handleDateClick(event) {
-        // if (
-        //     confirm("Would you like to add an event to " + event.dateStr + " ?")
-        // ) {
-        //     const { events } = options;
-        //     const calendarEvents = [
-        //         ...events,
-        //         {
-        //             title: "New Event",
-        //             start: event.date,
-        //             allDay: event.allDay,
-        //         },
-        //     ];
-        //     options = {
-        //         ...options,
-        //         events: calendarEvents,
-        //     };
-        // }
+        selectedDate$.next(event.dateStr);
     }
 </script>
 
-<div class="demo-app">
+<div>
     <div class="demo-app-top">
         <button on:click={toggleWeekends}>toggle weekends</button> &nbsp;
         <button on:click={gotoPast}>go to a date in the past</button> &nbsp; (also,
@@ -74,13 +54,19 @@
 </div>
 
 <style>
+    /* :global(* > *) {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
     .demo-app {
-        width: 100%;
-        /* height: 100vh; */
+        width: 100vw;
+        height: 100vh;
         padding: 0.5rem;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
         font-size: 14px;
     }
     .demo-app-calendar {
@@ -96,5 +82,5 @@
         padding: 1rem;
         margin: 1rem;
         cursor: pointer;
-    }
+    } */
 </style>

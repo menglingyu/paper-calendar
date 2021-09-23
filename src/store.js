@@ -1,56 +1,99 @@
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { switchMap, take, takeWhile, takeUntil } from 'rxjs/operators'
+import { switchMap, take, takeWhile, takeUntil, skip } from 'rxjs/operators'
 import dayjs from 'dayjs'
 import Toast from './components/Toast/Toast.min.js'
+import { getColorByBlocks } from './helper.js';
 
 
 
-const iniDataReady$ = new BehaviorSubject(false)
+
 export const calendarEvents$ = new BehaviorSubject([])
 export const editData$ = new BehaviorSubject(null)
-export const selectedDate$ = new BehaviorSubject(dayjs(Date.now()).format('YYYY-M-D'))
+export const selectedDate$ = new BehaviorSubject(dayjs(Date.now()).format('YYYY-MM-DD'))
 
-
-
-// // TODO: 
-// console.log = function () {
-//     return new Toast({ message: JSON.stringify([...arguments]) });
-// }
+export const allCalendarEvents$ = new BehaviorSubject({})
+export const allEditData$ = new BehaviorSubject(null)
 
 
 
 
 
-export const getEditDataFromStorage = () => {
 
-    const dataStr = localStorage.getItem(`edit-${selectedDate$.value}`)
+export const getAllEditDataFromStorage = () => {
+
+    const dataStr = localStorage.getItem(`allEditData`)
+
+
     if (dataStr) {
-        const data = JSON.parse(dataStr)
-        editData$.next(data)
-        return data
+        const parseData = JSON.parse(dataStr)
+        editData$.next(parseData[`edit-${selectedDate$.value}`])
+        allEditData$.next(parseData)
+        return parseData
     }
     return createInitEditData()
 }
 
+
+export function handleSetEditDataToCache() {
+    const selectedDate = selectedDate$.value
+    const editData = editData$.value
+    const dateData = Object.assign({}, { ...allEditData$.value }, {
+        [`edit-${selectedDate}`]: editData
+    })
+
+    allEditData$.next(dateData)
+
+    localStorage.setItem('allEditData', JSON.stringify(dateData) || '')
+}
+
 export const setFullCalendar = (outputData) => {
     if (!outputData) return
-    let list = []
-    outputData.blocks.filter(({ type }) => type === "checklist").reduce((prev, { data: { items } }) => {
+    let evens = []
+    Object.entries(outputData).forEach(([key, { blocks }]) => {
+        blocks.forEach(({ type, data: { items } }) => {
+            if (type === "checklist") {
+                items.forEach(({ text }) => {
+                    evens.push({ title: text, start: key.slice(5), display: "list-item", })
+                })
 
-        list = [...list, ...items.map(({ text }) => ({ title: text, start: new Date() }))]
-    }, [])
 
-    calendarEvents$.set(list)
+            }
+        })
+
+        console.log('getColorByBlocks(blocks)', getColorByBlocks(blocks));
+        evens.push({
+            display: 'background',
+            start: key.slice(5),
+            color: getColorByBlocks(blocks)
+        })
+    })
+    // console.log('outputData', JSON.stringify(outputData));
+    return evens
+
 }
 
-function iniData(params) {
-    getEditDataFromStorage()
-    setFullCalendar()
-}
-iniData()
 
-combineLatest([editData$, selectedDate$, iniDataReady$]).subscribe(([editData, selectedDate]) => {
-    localStorage.setItem(`edit-${selectedDate}`, editData ? JSON.stringify(editData) : '')
+allEditData$.subscribe((data) => {
+    console.log('allEditData$.', data);
+    const list = setFullCalendar(data)
+
+    calendarEvents$.next(list)
+
+    // if (data) {
+    //     editData$.next(data[`edit-${selectedDate}`])
+    // }
+})
+
+
+
+
+selectedDate$.subscribe((selectedDate) => {
+    debugger
+    if (allEditData$.value) {
+
+        editData$.next(allEditData$.value[`edit-${selectedDate}`])
+    }
+
 })
 
 function createInitEditData() {
@@ -59,6 +102,25 @@ function createInitEditData() {
     }
 }
 
-function createInitcalendarEvents() {
-    return []
+
+
+
+export function handleSetAllEditData(outputData) {
+
 }
+
+calendarEvents$.subscribe((data) => {
+    console.warn('calendarEvents$:->', calendarEvents$.value);
+})
+editData$.subscribe((data) => {
+    console.warn('editData$:->', editData$.value);
+})
+selectedDate$.subscribe((data) => {
+    console.warn('selectedDate$:->', selectedDate$.value);
+})
+allCalendarEvents$.subscribe((data) => {
+    console.warn('allCalendarEvents$:->', allCalendarEvents$.value);
+})
+allEditData$.subscribe((data) => {
+    console.warn('allEditData$:->', allEditData$.value);
+})

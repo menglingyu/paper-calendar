@@ -110,10 +110,12 @@
     });
 
     $: {
-        if (isReady && data) {
+        if (isReady) {
             editor.isReady.then(() => {
                 if (data) {
                     editor.render(data);
+                } else {
+                    editor.clear();
                 }
             });
         }
