@@ -25,7 +25,9 @@
     let editor = new EditorJS({
         readOnly: false,
         holder: "editorjs",
-        placeholder: "每一天都是一张纸",
+        // placeholder: "每一天都是一张纸",
+        height: '100%',
+        minHeight: 600,
         tools: {
             /**
              * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
@@ -132,44 +134,30 @@
 
     function handleKeydown(params) {
         console.log("params", params);
-        // debugger
+
     }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
-<div class="relative bg-white h-600-px overflow-scroll ">
+<div class="relative bg-white overflow-scroll ">
     <div class="ce-example">
         <div class="ce-example__header">
             <a class="ce-example__header-logo" href="https://codex.so/editor"
                 >Editor.js 🤩🧦🤨</a
             >
-
-            <div class="ce-example__header-menu">
-                <a href="https://github.com/editor-js" target="_blank"
-                    >Plugins</a
-                >
-                <a href="https://editorjs.io/usage" target="_blank">Usage</a>
-                <a href="https://editorjs.io/configuration" target="_blank"
-                    >Configuration</a
-                >
-                <a
-                    href="https://editorjs.io/creating-a-block-tool"
-                    target="_blank">API</a
-                >
-            </div>
         </div>
         <div class="ce-example__content _ce-example__content--small">
             <div id="editorjs" />
         </div>
     </div>
 </div>
-<button
+<!-- <button
     class="bg-orange-500 text-white active:bg-orange-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
     type="button"
     on:click={handleSave}
 >
     Save
-</button>
+</button> -->
 
 <style>
     /**
@@ -181,8 +169,9 @@
         font-size: 16.2px;
     }
     :global(.ce-block__content) {
-        max-width: 100%;
-        padding: 0 30px;
+        max-width: 650px
+        /* max-width: 100%;
+        padding: 0 60px; */
     }
 
     .ce-example__header {

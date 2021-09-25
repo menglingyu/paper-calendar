@@ -18,18 +18,19 @@
 
 <div>
     <div class="flex flex-wrap">
-        <div class="w-full overflow-scroll xl:w-6/12 mb-12 xl:mb-0 px-4  ">
+        <div class="w-full overflow-scroll xl:w-6/12 px-4">
             <Editor />
         </div>
-        <div class="w-full xl:w-6/12 ">
-            <div
+        <div class="relative w-full xl:w-6/12 bg-white px-4">
+            <Calendar />
+            <!-- <div
                 class="relative flex flex-col  break-words bg-white w-full shadow-lg rounded bg-white p-2"
             >
-                <Calendar />
-            </div>
+                
+            </div> -->
         </div>
     </div>
-    <div class="flex flex-wrap mt-4">
+    <!-- <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
             <CardPageVisits />
         </div>
@@ -41,5 +42,5 @@
         <div class="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
             <TimeLine />
         </div>
-    </div>
+    </div> -->
 </div>

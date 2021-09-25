@@ -55,7 +55,6 @@
   }
 
   function updateCalendarOptions() {
-    debugger;
     calendar.pauseRendering();
     calendar.resetOptions(options);
     calendar.resumeRendering();

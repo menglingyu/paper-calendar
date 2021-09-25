@@ -88,7 +88,7 @@ allEditData$.subscribe((data) => {
 
 
 selectedDate$.subscribe((selectedDate) => {
-    debugger
+
     if (allEditData$.value) {
 
         editData$.next(allEditData$.value[`edit-${selectedDate}`])
